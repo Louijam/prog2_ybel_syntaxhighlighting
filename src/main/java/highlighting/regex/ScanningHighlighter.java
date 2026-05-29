@@ -2,6 +2,7 @@ package highlighting.regex;
 
 import highlighting.core.HighlightRegion;
 import highlighting.core.SyntaxHighlighter;
+import highlighting.presets.MiniJavaTokens;
 import java.util.*;
 
 // TODO: Implement a scanning-based highlighting strategy that reads the input from left to right.
@@ -20,12 +21,48 @@ public class ScanningHighlighter extends SyntaxHighlighter {
   // regions in order.
   @Override
   public List<HighlightRegion> collectMatches(String text) {
-    throw new UnsupportedOperationException("not implemented yet");
+
+    List<HighlightRegion> result = new ArrayList<>();
+    List<Token> tokens = MiniJavaTokens.defaultTokens();
+
+    int i = 0;
+
+    while (i < text.length()) {
+
+      HighlightRegion best = null;
+      Token bestToken = null;
+
+      for (Token token : tokens) {
+
+        var matcher = token.pattern().matcher(text);
+        matcher.region(i, text.length());
+
+        if (matcher.lookingAt()) {
+
+          HighlightRegion r = new HighlightRegion(matcher.start(), matcher.end(), token.colour());
+
+          if (best == null || (r.end() - r.start()) > (best.end() - best.start())) {
+
+            best = r;
+            bestToken = token;
+          }
+        }
+      }
+
+      if (best != null) {
+        result.add(best);
+        i = best.end();
+      } else {
+        i++;
+      }
+    }
+
+    return result;
   }
 
   // TODO: Implement the identity function here.
   @Override
   public List<HighlightRegion> normalize(List<HighlightRegion> candidates) {
-    throw new UnsupportedOperationException("not implemented yet");
+    return candidates;
   }
 }
