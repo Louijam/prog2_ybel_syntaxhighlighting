@@ -1,9 +1,7 @@
-package highlighting.regex;
+package highlighting.presets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import highlighting.presets.MiniJavaColours;
-import highlighting.presets.MiniJavaTokens;
 import highlighting.regex.Token;
 import java.util.regex.Matcher;
 import org.junit.jupiter.api.BeforeAll;
